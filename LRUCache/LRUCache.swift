@@ -27,31 +27,68 @@ extension ListItem: CustomStringConvertible {
     }
 }
 
+/**
+ Simple implementation of a basic Least Recently Used (LRU) cache
+ - init with a maxSize > 0 (default = 32)
+*/
 public class LRUCache<Key: Hashable, Value> {
     var hashtable: [Key: ListItem<Key, Value>] = [:]
     var head: ListItem<Key, Value>? = nil
     var tail: ListItem<Key, Value>? = nil
     let maxSize: Int
-    var count: Int = 0
     
+    let lock = NSLock()
+    
+    /// for testing, don't rely on this
+    var count: Int {
+        get {
+            var acc = 0
+            apply({ _ in
+                acc = acc + 1
+            })
+            return acc
+        }
+    }
+    
+    /**
+     precondition: maxSize > 0 or it will crash
+    */
     init(maxSize: Int = 32) {
+        precondition(maxSize > 0, "Can't have a cache smaller than one item")
         self.maxSize = maxSize
     }
     
+    /**
+     Returns the value for a given key if it is in the cache. Also sets it to be last item
+     to be kicked from the cache in the event of overflow. If the item is not in the cache,
+     returns None
+    */
     public func itemForKey(key: Key) -> Value? {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         guard let item = hashtable[key] else { return nil }
         bubbleUp(item)
         return item.value
     }
     
+    /**
+     Sets the value for a particular key in the cache. Can either add a new value or will update
+     the value for that key in the cache. Also sets that item to be last to get kicked from the
+     cache in the event of overflow
+    */
     public func setItem(val: Value, forKey key:Key) {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         if let oldValue = hashtable[key] {
             self.removeItemFromList(oldValue)
         }
         let item = ListItem(withKey: key, value: val)
         bubbleUp(item)
         hashtable[key] = item
-        count = count + 1
         // cleanup
         while hashtable.count > maxSize {
             if let tail = self.tail {
@@ -85,7 +122,6 @@ public class LRUCache<Key: Hashable, Value> {
         if item === tail {
             tail = item.prev
         }
-        count = count - 1
     }
 }
 

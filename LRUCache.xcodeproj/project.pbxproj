@@ -12,6 +12,7 @@
 		EF42810A1C8A617C0029F71D /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4281091C8A617C0029F71D /* LRUCacheTests.swift */; };
 		EF42810C1C8A617C0029F71D /* LRUCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF4280E51C8A5A950029F71D /* LRUCache.framework */; };
 		EF4281121C8A61BE0029F71D /* LRUCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4280F01C8A5AB60029F71D /* LRUCache.swift */; };
+		EF4281171C8A8F250029F71D /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = EF4281161C8A8F250029F71D /* Readme.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,8 @@
 		EF4281071C8A617C0029F71D /* LRUCacheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LRUCacheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF4281091C8A617C0029F71D /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
 		EF42810B1C8A617C0029F71D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EF4281151C8A8CD80029F71D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		EF4281161C8A8F250029F71D /* Readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +59,8 @@
 		EF4280DB1C8A5A950029F71D = {
 			isa = PBXGroup;
 			children = (
+				EF4281151C8A8CD80029F71D /* LICENSE */,
+				EF4281161C8A8F250029F71D /* Readme.md */,
 				EF4280F51C8A5E550029F71D /* LinkedFrameworks */,
 				EF4280E71C8A5A950029F71D /* LRUCache */,
 				EF4281081C8A617C0029F71D /* LRUCacheTests */,
@@ -206,6 +211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF4281171C8A8F250029F71D /* Readme.md in Sources */,
 				EF4280F11C8A5AB60029F71D /* LRUCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
