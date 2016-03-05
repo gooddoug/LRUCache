@@ -7,7 +7,7 @@ LRUCache is a library for a Least Recently Used (LRU) Cache. It is useful for ca
 ## Installing
 [Carthage](https://github/com/carthage/carthage) is the recommended way to install this. Add the following to your cartfile:
 ```ruby
-github "gooddoug/MultiPartMimeHelper"
+github "gooddoug/LRUCache"
 ```
 
 Optionally, you can copy the LRUCache.swift file into your project and not worry about frameworks at all.
