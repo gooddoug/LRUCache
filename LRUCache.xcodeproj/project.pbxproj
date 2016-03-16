@@ -12,7 +12,6 @@
 		EF42810A1C8A617C0029F71D /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4281091C8A617C0029F71D /* LRUCacheTests.swift */; };
 		EF42810C1C8A617C0029F71D /* LRUCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF4280E51C8A5A950029F71D /* LRUCache.framework */; };
 		EF4281121C8A61BE0029F71D /* LRUCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4280F01C8A5AB60029F71D /* LRUCache.swift */; };
-		EF4281171C8A8F250029F71D /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = EF4281161C8A8F250029F71D /* Readme.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -211,7 +210,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF4281171C8A8F250029F71D /* Readme.md in Sources */,
 				EF4280F11C8A5AB60029F71D /* LRUCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -408,6 +406,7 @@
 				EF4281111C8A617C0029F71D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -100,7 +100,7 @@ public class LRUCache<Key: Hashable, Value> {
         hashtable[key] = item
         // cleanup
         while size > maxSize {
-            guard !(tail === head) else { return } // if only one item in list, don't remove it, ni matter the size
+            guard !(tail === head) else { return } // if only one item in list, don't remove it, no matter the size
             if let tail = self.tail {
                 hashtable.removeValueForKey(tail.key)
                 removeItemFromList(tail)
