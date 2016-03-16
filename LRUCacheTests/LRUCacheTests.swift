@@ -24,9 +24,13 @@ class LRUCacheTests: XCTestCase {
     
     func testCreate() {
         let stringInt = LRUCache<String, Int>(maxSize: 1)
+        XCTAssertNotNil(stringInt)
         let stringString = StringStringCache(maxSize: 100)
+        XCTAssertNotNil(stringString)
         let urlString = URLStringCache(maxSize: 10)
+        XCTAssertNotNil(urlString)
         let intString = IntStringCache(maxSize: 1)
+        XCTAssertNotNil(intString)
     }
     
 //    func testBadCreate() {
@@ -35,7 +39,6 @@ class LRUCacheTests: XCTestCase {
     
     func testGetAbsentKey() {
         let testKey = "test"
-        let testValue = 1
         let stringInt = StringIntCache(maxSize: 1)
         XCTAssertNil(stringInt.itemForKey(testKey))
     }
@@ -81,7 +84,7 @@ class LRUCacheTests: XCTestCase {
         let testValue2 = 2
         let testKey3 = "test3"
         let testValue3 = 3
-        let maxSize = 2
+        let maxSize: UInt = 2
         let stringInt = StringIntCache(maxSize: maxSize)
         stringInt.setItem(testValue1, forKey: testKey1)
         stringInt.setItem(testValue2, forKey: testKey2)
@@ -91,7 +94,7 @@ class LRUCacheTests: XCTestCase {
         item = stringInt.itemForKey(testKey2)
         XCTAssertNotNil(item)
         XCTAssert(item! == testValue2)
-        XCTAssert(stringInt.count <= maxSize)
+        XCTAssert(stringInt.size <= maxSize)
     }
     
     func testMutateValue() {
@@ -100,7 +103,7 @@ class LRUCacheTests: XCTestCase {
         let testKey2 = "test2"
         let testValue2 = 2
         let changedValue = 12
-        let maxSize = 2
+        let maxSize: UInt = 2
         let stringInt = StringIntCache(maxSize: maxSize)
         stringInt.setItem(testValue1, forKey: testKey1)
         var item = stringInt.itemForKey(testKey1)
@@ -112,7 +115,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssertNotNil(item)
         XCTAssert(item! == changedValue)
         debugPrint(stringInt.descriptionString)
-        XCTAssert(stringInt.count <= maxSize)
+        XCTAssert(stringInt.size <= maxSize)
     }
     
     func testRightThingGetsKickedFromCache() {
@@ -122,17 +125,50 @@ class LRUCacheTests: XCTestCase {
         let testValue2 = 2
         let testKey3 = "test3"
         let testValue3 = 3
-        let maxSize = 2
+        let maxSize: UInt = 2
         let stringInt = StringIntCache(maxSize: maxSize)
         stringInt.setItem(testValue1, forKey: testKey1)
         stringInt.setItem(testValue2, forKey: testKey2)
-        var item = stringInt.itemForKey(testKey1)
+        let item = stringInt.itemForKey(testKey1)
         XCTAssertNotNil(item)
         stringInt.setItem(testValue3, forKey: testKey3)
         let shouldBeNil = stringInt.itemForKey(testKey2)
         XCTAssertNil(shouldBeNil)
         debugPrint(stringInt.descriptionString)
-        XCTAssert(stringInt.count <= maxSize)
-        debugPrint("count: \(stringInt.count)")
+        XCTAssert(stringInt.size <= maxSize)
+        debugPrint("count: \(stringInt.size)")
+    }
+    
+    func testSizedCache() {
+        let testKey1 = "test1"
+        let testKey2 = "test2"
+        let testKey3 = "test3"
+        let stringInt = StringIntCache(maxSize: 4)
+        stringInt.sizeOfItem = { item in
+            return UInt(item)
+        }
+        stringInt.setItem(1, forKey: testKey1)
+        stringInt.setItem(2, forKey: testKey2)
+        var val1 = stringInt.itemForKey(testKey1)
+        XCTAssertNotNil(val1)
+        XCTAssertEqual(val1, 1)
+        XCTAssertEqual(stringInt.size, 3)
+        stringInt.setItem(3, forKey: testKey3)
+        val1 = stringInt.itemForKey(testKey1)
+        XCTAssertNotNil(val1)
+        XCTAssertEqual(val1, 1)
+        XCTAssertEqual(stringInt.size, 4)
+    }
+    
+    func testValueTooBig() {
+        let testKey = "test1"
+        let stringInt = StringIntCache(maxSize: 4)
+        stringInt.sizeOfItem = { item in
+            return UInt(item)
+        }
+        stringInt.setItem(5, forKey: testKey)
+        let val = stringInt.itemForKey(testKey)
+        XCTAssertNotNil(val)
+        XCTAssertEqual(val, 5)
     }
 }

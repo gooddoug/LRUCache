@@ -35,25 +35,34 @@ public class LRUCache<Key: Hashable, Value> {
     var hashtable: [Key: ListItem<Key, Value>] = [:]
     var head: ListItem<Key, Value>? = nil
     var tail: ListItem<Key, Value>? = nil
-    let maxSize: Int
+    let maxSize: UInt
     
     let lock = NSLock()
     
     /// for testing, don't rely on this
-    var count: Int {
+    var size: UInt {
         get {
-            var acc = 0
-            apply({ _ in
-                acc = acc + 1
+            var acc: UInt = 0
+            apply({ item in
+                acc = acc + self.sizeOfItem(item.value)
             })
             return acc
         }
     }
     
     /**
+     function for determining the size of a value inserted into the cache
+     by default, it uses a simpe count. This could be used for size in bytes,
+     length of strings, or any other integer measurement
+     */
+    var sizeOfItem: (Value)-> UInt = { item in
+        return 1
+    }
+    
+    /**
      precondition: maxSize > 0 or it will crash
     */
-    init(maxSize: Int = 32) {
+    init(maxSize: UInt = 32) {
         precondition(maxSize > 0, "Can't have a cache smaller than one item")
         self.maxSize = maxSize
     }
@@ -90,7 +99,8 @@ public class LRUCache<Key: Hashable, Value> {
         bubbleUp(item)
         hashtable[key] = item
         // cleanup
-        while hashtable.count > maxSize {
+        while size > maxSize {
+            guard !(tail === head) else { return } // if only one item in list, don't remove it, ni matter the size
             if let tail = self.tail {
                 hashtable.removeValueForKey(tail.key)
                 removeItemFromList(tail)
