@@ -8,11 +8,11 @@
 
 import Foundation
 
-internal class ListItem <Key: Hashable, Value> {
+class ListItem <Key: Hashable, Value> {
     let key: Key
     let value: Value
-    var next: ListItem<Key, Value>? = nil
-    var prev: ListItem<Key, Value>? = nil
+    var nextItem: ListItem<Key, Value>? = nil
+    var prevItem: ListItem<Key, Value>? = nil
     init(withKey key: Key, value: Value) {
         self.value = value
         self.key = key
@@ -24,6 +24,17 @@ extension ListItem: CustomStringConvertible {
         get {
             return "\(String(key)): \(String(value))"
         }
+    }
+}
+
+public struct ListItemGenerator <Key: Hashable, Value>: GeneratorType {
+    public typealias Element = Value
+    var currentItem: ListItem<Key, Value>?
+    
+    mutating public func next() -> Value? {
+        guard let i = currentItem else { return nil }
+        currentItem = i.nextItem
+        return i.value
     }
 }
 
@@ -42,10 +53,9 @@ public class LRUCache<Key: Hashable, Value> {
     /// for testing, don't rely on this
     var size: UInt {
         get {
-            var acc: UInt = 0
-            apply({ item in
-                acc = acc + self.sizeOfItem(item.value)
-            })
+            let acc: UInt = reduce(0) { curr, item in
+                curr + self.sizeOfItem(item)
+            }
             return acc
         }
     }
@@ -112,46 +122,39 @@ public class LRUCache<Key: Hashable, Value> {
         guard !(item === head) else { return }
         removeItemFromList(item)
         if let oldHead = head {
-            item.next = oldHead
-            oldHead.prev = item
+            item.nextItem = oldHead
+            oldHead.prevItem = item
         } else {
             // list empty, item is also the tail
             tail = item
         }
-        item.prev = nil
+        item.prevItem = nil
         head = item
     }
     
     func removeItemFromList(item: ListItem<Key, Value>) {
-        if let prev = item.prev {
-            prev.next = item.next
+        if let prev = item.prevItem {
+            prev.nextItem = item.nextItem
         }
-        if let next = item.next {
-            next.prev = item.prev
+        if let next = item.nextItem {
+            next.prevItem = item.prevItem
         }
         if item === tail {
-            tail = item.prev
+            tail = item.prevItem
         }
     }
 }
 
-extension LRUCache {
-    func apply(f: (ListItem<Key, Value>)->()) {
-        var val = head
-        while val != nil {
-            f(val!)
-            val = val!.next
-        }
+extension LRUCache: SequenceType {
+    public func generate() -> ListItemGenerator<Key, Value> {
+        return ListItemGenerator(currentItem: head)
     }
 }
 
 extension LRUCache {
     public var descriptionString: String {
         get {
-            var acc: [String] = []
-            apply {
-                acc.append(String($0))
-            }
+            var acc: [String] = map { return String($0) }
             acc.append("•")
             return acc.joinWithSeparator("\n")
         }
