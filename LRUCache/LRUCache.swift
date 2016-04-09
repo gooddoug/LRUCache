@@ -43,14 +43,13 @@ public struct ListItemGenerator <Key: Hashable, Value>: GeneratorType {
  - init with a maxSize > 0 (default = 32)
 */
 public class LRUCache<Key: Hashable, Value> {
-    var hashtable: [Key: ListItem<Key, Value>] = [:]
-    var head: ListItem<Key, Value>? = nil
-    var tail: ListItem<Key, Value>? = nil
+    private var hashtable: [Key: ListItem<Key, Value>] = [:]
+    private var head: ListItem<Key, Value>? = nil
+    private var tail: ListItem<Key, Value>? = nil
     let maxSize: UInt
     
-    let lock = NSLock()
+    private let lock = NSLock()
     
-    /// for testing, don't rely on this
     var size: UInt {
         get {
             let acc: UInt = reduce(0) { curr, item in
@@ -62,7 +61,7 @@ public class LRUCache<Key: Hashable, Value> {
     
     /**
      function for determining the size of a value inserted into the cache
-     by default, it uses a simpe count. This could be used for size in bytes,
+     by default, it uses a simple count. This could be used for size in bytes,
      length of strings, or any other integer measurement
      */
     var sizeOfItem: (Value)-> UInt = { item in
@@ -80,7 +79,7 @@ public class LRUCache<Key: Hashable, Value> {
     /**
      Returns the value for a given key if it is in the cache. Also sets it to be last item
      to be kicked from the cache in the event of overflow. If the item is not in the cache,
-     returns None
+     returns .None
     */
     public func itemForKey(key: Key) -> Value? {
         lock.lock()
@@ -118,7 +117,9 @@ public class LRUCache<Key: Hashable, Value> {
         }
     }
     
-    func bubbleUp(item: ListItem<Key, Value>) {
+    // MARK: - private methods
+    
+    private func bubbleUp(item: ListItem<Key, Value>) {
         guard !(item === head) else { return }
         removeItemFromList(item)
         if let oldHead = head {
@@ -132,7 +133,7 @@ public class LRUCache<Key: Hashable, Value> {
         head = item
     }
     
-    func removeItemFromList(item: ListItem<Key, Value>) {
+    private func removeItemFromList(item: ListItem<Key, Value>) {
         if let prev = item.prevItem {
             prev.nextItem = item.nextItem
         }
@@ -145,6 +146,7 @@ public class LRUCache<Key: Hashable, Value> {
     }
 }
 
+/// Sequence operations don't change the structure of the cache like itemForKey and setItem will
 extension LRUCache: SequenceType {
     public func generate() -> ListItemGenerator<Key, Value> {
         return ListItemGenerator(currentItem: head)

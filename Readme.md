@@ -9,7 +9,7 @@ Simplest way to install this is to copy the LRUCache.swift file into your projec
 // create a cache for no more than 64 images, keyed on URL
 let urlImageCache<NSURL, UIImage>(maxSize: 64)
 
-guard let image = urlImageCache.itemForKey(someURL) else { kickOffDownloadImageForURL(url) }
+guard let image = urlImageCache.itemForKey(someURL) else { return kickOffDownloadImageForURL(url) }
 displayImage(image)
 
 func kickOffDownloadImageForURL(url: NSURL) {
