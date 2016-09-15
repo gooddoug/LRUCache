@@ -84,7 +84,7 @@ class LRUCacheTests: XCTestCase {
         let testValue2 = 2
         let testKey3 = "test3"
         let testValue3 = 3
-        let maxSize: UInt = 2
+        let maxSize: Int = 2
         let stringInt = StringIntCache(maxSize: maxSize)
         stringInt.setItem(testValue1, forKey: testKey1)
         stringInt.setItem(testValue2, forKey: testKey2)
@@ -103,7 +103,7 @@ class LRUCacheTests: XCTestCase {
         let testKey2 = "test2"
         let testValue2 = 2
         let changedValue = 12
-        let maxSize: UInt = 2
+        let maxSize: Int = 2
         let stringInt = StringIntCache(maxSize: maxSize)
         stringInt.setItem(testValue1, forKey: testKey1)
         var item = stringInt.itemForKey(testKey1)
@@ -125,7 +125,7 @@ class LRUCacheTests: XCTestCase {
         let testValue2 = 2
         let testKey3 = "test3"
         let testValue3 = 3
-        let maxSize: UInt = 2
+        let maxSize: Int = 2
         let stringInt = StringIntCache(maxSize: maxSize)
         stringInt.setItem(testValue1, forKey: testKey1)
         stringInt.setItem(testValue2, forKey: testKey2)
@@ -145,7 +145,7 @@ class LRUCacheTests: XCTestCase {
         let testKey3 = "test3"
         let stringInt = StringIntCache(maxSize: 4)
         stringInt.sizeOfItem = { item in
-            return UInt(item)
+            return Int(item)
         }
         stringInt.setItem(1, forKey: testKey1)
         stringInt.setItem(2, forKey: testKey2)
@@ -164,7 +164,7 @@ class LRUCacheTests: XCTestCase {
         let testKey = "test1"
         let stringInt = StringIntCache(maxSize: 4)
         stringInt.sizeOfItem = { item in
-            return UInt(item)
+            return Int(item)
         }
         stringInt.setItem(5, forKey: testKey)
         let val = stringInt.itemForKey(testKey)

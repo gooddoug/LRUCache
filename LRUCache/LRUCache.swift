@@ -46,13 +46,13 @@ open class LRUCache<Key: Hashable, Value> {
     fileprivate var hashtable: [Key: ListItem<Key, Value>] = [:]
     fileprivate var head: ListItem<Key, Value>? = nil
     fileprivate var tail: ListItem<Key, Value>? = nil
-    let maxSize: UInt
+    let maxSize: Int
     
     fileprivate let lock = NSLock()
     
-    var size: UInt {
+    var size: Int {
         get {
-            let acc: UInt = reduce(0) { curr, item in
+            let acc: Int = reduce(0) { curr, item in
                 curr + self.sizeOfItem(item)
             }
             return acc
@@ -64,14 +64,14 @@ open class LRUCache<Key: Hashable, Value> {
      by default, it uses a simple count. This could be used for size in bytes,
      length of strings, or any other integer measurement
      */
-    var sizeOfItem: (Value)-> UInt = { item in
+    var sizeOfItem: (Value)-> Int = { item in
         return 1
     }
     
     /**
      precondition: maxSize > 0 or it will crash
     */
-    init(maxSize: UInt = 32) {
+    init(maxSize: Int = 32) {
         precondition(maxSize > 0, "Can't have a cache smaller than one item")
         self.maxSize = maxSize
     }
