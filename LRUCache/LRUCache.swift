@@ -22,12 +22,12 @@ class ListItem <Key: Hashable, Value> {
 extension ListItem: CustomStringConvertible {
     var description: String {
         get {
-            return "\(String(key)): \(String(value))"
+            return "\(String(describing: key)): \(String(describing: value))"
         }
     }
 }
 
-public struct ListItemGenerator <Key: Hashable, Value>: GeneratorType {
+public struct ListItemGenerator <Key: Hashable, Value>: IteratorProtocol {
     public typealias Element = Value
     var currentItem: ListItem<Key, Value>?
     
@@ -42,13 +42,13 @@ public struct ListItemGenerator <Key: Hashable, Value>: GeneratorType {
  Simple implementation of a basic Least Recently Used (LRU) cache
  - init with a maxSize > 0 (default = 32)
 */
-public class LRUCache<Key: Hashable, Value> {
-    private var hashtable: [Key: ListItem<Key, Value>] = [:]
-    private var head: ListItem<Key, Value>? = nil
-    private var tail: ListItem<Key, Value>? = nil
+open class LRUCache<Key: Hashable, Value> {
+    fileprivate var hashtable: [Key: ListItem<Key, Value>] = [:]
+    fileprivate var head: ListItem<Key, Value>? = nil
+    fileprivate var tail: ListItem<Key, Value>? = nil
     let maxSize: UInt
     
-    private let lock = NSLock()
+    fileprivate let lock = NSLock()
     
     var size: UInt {
         get {
@@ -81,7 +81,7 @@ public class LRUCache<Key: Hashable, Value> {
      to be kicked from the cache in the event of overflow. If the item is not in the cache,
      returns .None
     */
-    public func itemForKey(key: Key) -> Value? {
+    open func itemForKey(_ key: Key) -> Value? {
         lock.lock()
         defer {
             lock.unlock()
@@ -96,7 +96,7 @@ public class LRUCache<Key: Hashable, Value> {
      the value for that key in the cache. Also sets that item to be last to get kicked from the
      cache in the event of overflow
     */
-    public func setItem(val: Value, forKey key:Key) {
+    open func setItem(_ val: Value, forKey key:Key) {
         lock.lock()
         defer {
             lock.unlock()
@@ -111,7 +111,7 @@ public class LRUCache<Key: Hashable, Value> {
         while size > maxSize {
             guard !(tail === head) else { return } // if only one item in list, don't remove it, no matter the size
             if let tail = self.tail {
-                hashtable.removeValueForKey(tail.key)
+                hashtable.removeValue(forKey: tail.key)
                 removeItemFromList(tail)
             }
         }
@@ -119,7 +119,7 @@ public class LRUCache<Key: Hashable, Value> {
     
     // MARK: - private methods
     
-    private func bubbleUp(item: ListItem<Key, Value>) {
+    fileprivate func bubbleUp(_ item: ListItem<Key, Value>) {
         guard !(item === head) else { return }
         removeItemFromList(item)
         if let oldHead = head {
@@ -133,7 +133,7 @@ public class LRUCache<Key: Hashable, Value> {
         head = item
     }
     
-    private func removeItemFromList(item: ListItem<Key, Value>) {
+    fileprivate func removeItemFromList(_ item: ListItem<Key, Value>) {
         if let prev = item.prevItem {
             prev.nextItem = item.nextItem
         }
@@ -147,8 +147,8 @@ public class LRUCache<Key: Hashable, Value> {
 }
 
 /// Sequence operations don't change the structure of the cache like itemForKey and setItem will
-extension LRUCache: SequenceType {
-    public func generate() -> ListItemGenerator<Key, Value> {
+extension LRUCache: Sequence {
+    public func makeIterator() -> ListItemGenerator<Key, Value> {
         return ListItemGenerator(currentItem: head)
     }
 }
@@ -156,9 +156,9 @@ extension LRUCache: SequenceType {
 extension LRUCache {
     public var descriptionString: String {
         get {
-            var acc: [String] = map { return String($0) }
+            var acc: [String] = map { return String(describing: $0) }
             acc.append("•")
-            return acc.joinWithSeparator("\n")
+            return acc.joined(separator: "\n")
         }
     }
 }

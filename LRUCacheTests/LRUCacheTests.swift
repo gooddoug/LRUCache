@@ -11,12 +11,12 @@ import XCTest
 typealias StringStringCache = LRUCache<String, String>
 typealias StringIntCache = LRUCache<String, Int>
 typealias IntStringCache = LRUCache<Int, String>
-typealias URLStringCache = LRUCache<NSURL, String>
+typealias URLStringCache = LRUCache<URL, String>
 
 class LRUCacheTests: XCTestCase {
     
     let debugPrinting = true
-    func debugPrint(item: String) {
+    func debugPrint(_ item: String) {
         if debugPrinting {
             print(item)
         }
